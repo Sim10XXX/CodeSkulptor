@@ -1,3 +1,6 @@
+#Shows the time based off your system clock and is adjusted to be in the time zone -5 from central
+#You can change the theme color through the color menu represented by the color wheel
+#Typically you want the menu toggled off as it causes lag
 import simplegui
 import math
 import time
@@ -26,8 +29,6 @@ def draw(canvas):
     canvas.draw_line((250+3*math.sin((time.time()/3600)*math.pi*2),250-3*math.cos((time.time()/3600)*math.pi*2)),(250+200*math.sin((time.time()/3600)*math.pi*2),250-200*math.cos((time.time()/3600)*math.pi*2)),5,main)
     canvas.draw_line((250+3*math.sin((time.time()/60)*math.pi*2),250-3*math.cos((time.time()/60)*math.pi*2)),(250+210*math.sin((time.time()/60)*math.pi*2),250-210*math.cos((time.time()/60)*math.pi*2)),3,main)
     canvas.draw_line((250+3*math.sin(((time.time()/43200))*math.pi*2+timezone*math.pi/6),250-3*math.cos(((time.time()/43200))*math.pi*2+timezone*math.pi/6)),(250+100*math.sin(((time.time()/43200))*math.pi*2+timezone*math.pi/6),250-100*math.cos(((time.time()/43200))*math.pi*2+timezone*math.pi/6)),7,main)
-    #43200
-    #print ((time.time()/2592000)%12)
 def mouse_handler(pos):
     global color,showColor,r,b
     x=pos[0]
