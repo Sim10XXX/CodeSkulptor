@@ -1,10 +1,17 @@
+#buttons:
+#WASD or arrow keys - movement
+#Z - undo
+#R - reset
+#SPACE - wait
+#C - toggle compass
+#priority: movement -> conversion -> destruction
 import simplegui
 import math
 import time
-import random #for graphics
+import random
 def def_rules(a=0):
     global rules,instance,compression
-    rules=[[],[],[],[],[],[],[],[],[],[],[],{}]
+    rules=[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],{}]
     for r in range(len(level[instance])):
         for c in range(len(level[instance][r])):
             i=instance
@@ -30,10 +37,8 @@ def def_rules(a=0):
                                             if (int(level[i2][r+1][c][layer2][0])>=31):		#normal
                                                 rules[int(level[i2][r+1][c][layer2][0])-31].append(int(level[i1][r-1][c][layer][0]))
                                             elif (int(level[i2][r+1][c][layer2][0])<=20):	#conversion
-                                                rules[11].setdefault(int(level[i1][r-1][c][layer][0]),[])
-                                                rules[11][int(level[i1][r-1][c][layer][0])].append(int(level[i2][r+1][c][layer2][0]))
-                                                
-                                                
+                                                rules[15].setdefault(int(level[i1][r-1][c][layer][0]),[])
+                                                rules[15][int(level[i1][r-1][c][layer][0])].append(int(level[i2][r+1][c][layer2][0]))
                     if (c>0 and c<len(level[i][r])-1):					#horizontal rules
                         i1=instance
                         while (level[i1][r][c-1]==[[]]):
@@ -50,10 +55,10 @@ def def_rules(a=0):
                                             if (int(level[i2][r][c+1][layer2][0])>=31):		#normal
                                                 rules[int(level[i2][r][c+1][layer2][0])-31].append(int(level[i1][r][c-1][layer][0]))
                                             elif (int(level[i2][r][c+1][layer2][0])<=20):	#conversion
-                                                rules[11].setdefault(int(level[i1][r][c-1][layer][0]),[])
-                                                rules[11][int(level[i1][r][c-1][layer][0])].append(int(level[i2][r][c+1][layer2][0]))
+                                                rules[15].setdefault(int(level[i1][r][c-1][layer][0]),[])
+                                                rules[15][int(level[i1][r][c-1][layer][0])].append(int(level[i2][r][c+1][layer2][0]))
     for o in range(-1,21):
-        rules[11].setdefault(o,[o])
+        rules[15].setdefault(o,[o])
     for o in range(len(rules[0])):
         if (rules[0][o] in rules[2]):
             rules[3].append(rules[0][o])
@@ -63,7 +68,7 @@ def def_rules(a=0):
         complist=[]
         compression=[]
         for o in range (-1,21):
-            if (o not in rules[0] and o not in rules[1] and o not in rules[4] and o not in rules[5] and o not in rules[6] and o not in rules[7] and o not in rules[8] and o not in rules[9]):
+            if (o not in rules[0] and o not in rules[1] and o not in rules[4] and o not in rules[5] and o not in rules[6] and o not in rules[7] and o not in rules[8] and o not in rules[9] and o not in rules[11]):
                 complist.append(o)
         for r in range(len(level[instance])):
             for c in range(len(level[instance][r])):
@@ -76,19 +81,20 @@ def def_rules(a=0):
                         compval=1
                 if (compval==0):
                     compression.append([r,c])
-#level[instance][row][column][layer][0=type,1=face (unused),2=movement flag]
-level=[[[[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]]],
-       [[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]]],
-       [[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]]],
-       [[[0]],[[0]],[[0]],[["4",1,0]],[["21",1,0]],[["33",1,0]],[[0]],[[0]],[[0]],[[0]]],
-       [[[0]],[[0]],[[0]],[[0]],[[4,1,0]],[[0]],[[0]],[[0]],[[0]],[[0]]],
-       [[[0]],[[1,2,0]],[[0]],[[0]],[[4,1,0]],[[0]],[[0]],[[0]],[[3,1,0]],[[0]]],
-       [[[0]],[[0]],[[0]],[[0]],[[4,1,0]],[[0]],[[0]],[[0]],[[0]],[[0]]],
-       [[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]]],
-       [[[0]],[["1",1,0]],[["21",1,0]],[["31",1,0]],[[0]],[[0]],[["3",1,0]],[["21",1,0]],[["32",1,0]],[[0]]],
+#level[instance][row][column][layer][0=type,1=facing,2=movement flag]
+level=[[[[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[["2",1,0]],[["21",1,0]],[["34",1,0]]],
+       [[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[5,4,0]],[[0]],[[0]],[[0]]],
+       [[["1",1,0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[1,2,0]],[[0]],[[0]]],
+       [[["21",1,0]],[[0]],[[0]],[[2,3,0]],[[0]],[[0]],[[0]],[[0]],[[6,1,0]],[[0]]],
+       [[["31",1,0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[["1",1,0]],[[0]],[[0]]],
+       [[["6",1,0]],[[0]],[["5",1,0]],[["21",1,0]],[["32",1,0]],[[0]],[[0]],[[0]],[[0]],[[0]]],
+       [[["21",1,0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[["6",1,0]],[["21",1,0]],[["33",1,0]]],
+       [[[0]],[[0]],[["5",1,0]],[["21",1,0]],[["36",1,0]],[[0]],[[0]],[[0]],[[0]],[[0]]],
+       [[[0]],[["37",1,0]],[["38",1,0]],[["39",1,0]],[["40",1,0]],[["34",1,0]],[["42",1,0]],[[0]],[[0]],[[0]]],
        [[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]],[[0]]]]]
 instance=0
 win=0
+compass=-1
 time1=-210
 value=-1
 part=1
@@ -108,9 +114,9 @@ hw=[]
 for i in range(10):
     hw.append(random.randint(0,200000))
 #rules[0]="you"    rules[1]="win"    rules[2]="stop"    rules[3]="push"    rules[4]="defeat"    rules[5]="sink"
-#rules[6]="hot"   rules[7]="melt"    rules[8]="open"        rules[9]="shut"        rules[10]="float"         rules[11]=conversion
+#rules[6]="hot"   rules[7]="melt"    rules[8]="open"        rules[9]="shut"        rules[10]="float"         rules[11]="move"
+#rules[15]=conversion
 def_rules()
-
 def input_handler(code):
     global level,instance,note
     if (len(code)>5):
@@ -169,9 +175,8 @@ def input_handler(code):
         print ("")
     def_rules()
 
-
 def draw_handler(canvas):
-    global level,instance,rules,note
+    global level,instance,rules,note,compass
     global time1,h,part,x,y,time2,h2,part2,x2,y2,time3,h3,part3,x3,y3 #for fireworks
     global flo,f,particle,tick,ppos,hp,hw
     #print (rules)
@@ -206,9 +211,22 @@ def draw_handler(canvas):
                         canvas.draw_line([44+50*c,50+50*r-f],[44+50*c,38+50*r-f],12,"red")
                         canvas.draw_line([44+50*c,50*r-f],[44+50*c,12+50*r-f],12,"red")
                     if (level[i][r][c][l][0]==2):
-                        canvas.draw_arc([25+50*c,50*r-f],45,1.05,2.07,10,"green")
-                        canvas.draw_arc([50*c,43+50*r-f],45,5.25,6.29,10,"green")
-                        canvas.draw_arc([50+50*c,43+50*r-f],45,3.15,4.2,10,"green")
+                        if (level[i][r][c][l][1]==1):
+                            canvas.draw_arc([25+50*c,50*r-f],45,1.05,2.07,10,"green")
+                            canvas.draw_arc([50*c,43+50*r-f],45,5.25,6.29,10,"green")
+                            canvas.draw_arc([50+50*c,43+50*r-f],45,3.15,4.2,10,"green")
+                        elif (level[i][r][c][l][1]==2):
+                            canvas.draw_arc([50+50*c,25+50*r-f],45,2.62,3.64,10,"green")
+                            canvas.draw_arc([7+50*c,50*r-f],45,6.82,7.86,10,"green")
+                            canvas.draw_arc([7+50*c,50+50*r-f],45,4.72,5.77,10,"green")
+                        elif (level[i][r][c][l][1]==3):
+                            canvas.draw_arc([25+50*c,50+50*r-f],45,4.19,5.21,10,"green")
+                            canvas.draw_arc([50*c,7+50*r-f],45,6.29,7.35,10,"green")
+                            canvas.draw_arc([50+50*c,7+50*r-f],45,2.1,3.15,10,"green")
+                        elif (level[i][r][c][l][1]==4):
+                            canvas.draw_arc([50*c,25+50*r-f],45,-0.52,0.5,10,"green")
+                            canvas.draw_arc([43+50*c,50+50*r-f],45,3.68,4.72,10,"green")
+                            canvas.draw_arc([43+50*c,50*r-f],45,1.58,2.63,10,"green")
                     if (level[i][r][c][l][0]==3):
                         canvas.draw_line([10+50*c,45+50*r-f],[16+50*c,5+50*r-f],5,"yellow")
                         canvas.draw_circle([10+50*c,45+50*r-f],2,1,"yellow","yellow")
@@ -303,9 +321,25 @@ def draw_handler(canvas):
                         canvas.draw_text("f",[10+50*c,23+50*r-f],30,"grey")
                         canvas.draw_text("l",[25+50*c,23+50*r-f],30,"grey")
                         canvas.draw_text("oat",[5+50*c,45+50*r-f],30,"grey")
+                    if (level[i][r][c][l][0]=="42"): #move
+                        canvas.draw_polygon([[14+50*c,12.5+50*r-f],[36+50*c,12.5+50*r-f],[37.5+50*c,14+50*r-f],[37.5+50*c,36+50*r-f],[36+50*c,37.5+50*r-f],[14+50*c,37.5+50*r-f],[12.5+50*c,36+50*r-f],[12.5+50*c,14+50*r-f]],25,"lightgreen")
+                        canvas.draw_text("mo",[5+50*c,23+50*r-f],30,"grey")
+                        canvas.draw_text("ve",[10+50*c,45+50*r-f],30,"grey")
+                    if (compass==1):
+                        if (level[i][r][c][l][1]==1):
+                            canvas.draw_line([43+50*c,43+50*r],[43+50*c,37+50*r],3,"rgb(25,25,25,0.8)")
+                            canvas.draw_line([43+50*c,43+50*r],[43+50*c,37+50*r],2,"yellow")
+                        if (level[i][r][c][l][1]==2):
+                            canvas.draw_line([43+50*c,43+50*r],[49+50*c,43+50*r],3,"rgb(25,25,25,0.8)")
+                            canvas.draw_line([43+50*c,43+50*r],[49+50*c,43+50*r],2,"yellow")
+                        if (level[i][r][c][l][1]==3):
+                            canvas.draw_line([43+50*c,43+50*r],[43+50*c,49+50*r],3,"rgb(25,25,25,0.8)")
+                            canvas.draw_line([43+50*c,43+50*r],[43+50*c,49+50*r],2,"yellow")
+                        if (level[i][r][c][l][1]==4):
+                            canvas.draw_line([43+50*c,43+50*r],[37+50*c,43+50*r],3,"rgb(25,25,25,0.8)")
+                            canvas.draw_line([43+50*c,43+50*r],[37+50*c,43+50*r],2,"yellow")
+                        canvas.draw_circle([43+50*c,43+50*r],6,1.5,"rgb(25,25,25)")
                 if (level[i][r][c][l][0] in rules[1] or (-1 in rules[1] and type(level[i][r][c][l][0])==str)):
-                    #random.seed(hw)
-                    #hw2=random.randint(0,200000)
                     for par in range(10):
                         if ((tick+par)%10==0):
                             hw[par]=random.randint(0,200000)
@@ -332,7 +366,7 @@ def draw_handler(canvas):
     if (win==1):
         time1=time1+5
         random.seed(h)
-        canvas.draw_text("WIN",[(len(level[0][0])*50)/2-(frame.get_canvas_textwidth("WIN",200,"sans-serif"))/2,(len(level[0])*50)/2+75],200,"rgb(235,235,235,0.8)","sans-serif")
+        canvas.draw_text("WIN",[(len(level[0][0])*50)/2-(frame.get_canvas_textwidth("WIN",200))/2,(len(level[0])*50)/2+75],200,"rgb(235,235,235,0.8)","sans-serif")
         if (part==1):
             a=random.uniform(-0.16,0.16)
             x=random.randint(30,len(level[0][0])*50-30)
@@ -419,21 +453,26 @@ def draw_handler(canvas):
         note=note-1
         canvas.draw_text("close back window^",[-250+len(level[0][0])*50,30],30,"rgb(255,255,255,"+str(note/50)+")")
         canvas.draw_text("to reduce lag",[-250+len(level[0][0])*50,60],30,"rgb(255,255,255,"+str(note/50)+")")
-def push(i,r,c,l,p,q):
+def push(i,r,c,l,p,q,m=0):
     global level,value,rules,instance
-    level[i][r+p][c+q][l][2]=3			#change when adding move rule
     if (p>0):
         p2=1
+        level[i][r+p][c+q][l][2]=6
     elif (p==0):
         p2=0
     elif (p<0):
         p2=-1
+        level[i][r+p][c+q][l][2]=4
     if (q>0):
         q2=1
+        level[i][r+p][c+q][l][2]=5
     elif (q==0):
         q2=0
     elif (q<0):
         q2=-1
+        level[i][r+p][c+q][l][2]=7
+    if (m==0):
+        level[i][r+p][c+q][l][2]=3
     if ((p==-1 and q==0 and r+p>0) or (p==0 and q==1 and c+q<len(level[i][r+p])-1) or (p==1 and q==0 and r+p<len(level[i])-1) or (p==0 and q==-1 and c+q>0)):
         i2=instance
         while (level[i2][r+p+p2][c+q+q2]==[[]]):
@@ -458,7 +497,7 @@ def push(i,r,c,l,p,q):
     if (value==3):
         level[i][r+p][c+q][l][2]=0
 def key_handler(key):
-    global level,instance,rules,win,value,particle,ppos,hp,compression
+    global level,instance,rules,win,value,particle,ppos,hp,compression,compass,merge
     #38 = up   |   40 = down   |   39 = right   |   37 = left   |   32 = space   |   82 = r   |   90 = z   |   67 = c
     #87 = W   |   65 = A   |   83 = S   |   68 = D
     move=-1
@@ -492,7 +531,10 @@ def key_handler(key):
         def_rules()
     elif (key==32 and win==0):
         move=0
+    elif (key==67):
+        compass=compass*-1
     if (move!=-1):
+        t1=time.time()
         def_rules(a=1)
         move_rule=0
         if (rules[11]!=[]):
@@ -537,6 +579,7 @@ def key_handler(key):
                         if (len(level[i][r][c][layer])>2):
                             if (level[i][r][c][layer][2]!=3):
                                 level[i][r][c][layer][2]=0
+        t2=time.time()
         for r in range(len(level[instance])):
             for c in range(len(level[instance][r])):
                 i=instance
@@ -594,7 +637,174 @@ def key_handler(key):
                             level[instance+1][r][c].append([0])
                             level[instance+1][r][c].remove([])
         instance=instance+1
+        t3=time.time()
+        merge=[]
+        if (move_rule==1):																#if move exists
+            layer_cleanup()
+            level.append([])
+            for o in range(len(level[instance])):
+                level[instance+1].append([])
+                for p in range(len(level[instance][0])):
+                    level[instance+1][o].append([[]])
+            flip=[]
+            for r in range(len(level[instance])):
+                for c in range(len(level[instance][r])):
+                    if ([r,c] not in compression):
+                        i=instance
+                        while (level[i][r][c]==[[]]):
+                            i=i-1
+                        value=-1
+                        stop=0
+                        for l in range(len(level[i][r][c])):
+                            if (level[i][r][c][l][0] in rules[11] or (-1 in rules[11] and type(level[i][r][c][l][0])==str)):		#move_rule
+                                v3=0
+                                v4=0
+                                if (level[i][r][c][l][1]==1):
+                                    v3=-1
+                                if (level[i][r][c][l][1]==2):
+                                    v4=1
+                                if (level[i][r][c][l][1]==3):
+                                    v3=1
+                                if (level[i][r][c][l][1]==4):
+                                    v4=-1
+                                if ((level[i][r][c][l][1]==1 and r>0) or (level[i][r][c][l][1]==2 and c<len(level[i][r])-1) or (level[i][r][c][l][1]==3 and r<len(level[i])-1) or (level[i][r][c][l][1]==4 and c>0)):
+                                    value=0
+                                    i2=instance
+                                    while (level[i2][r+v3][c+v4]==[[]]):
+                                        i2=i2-1
+                                    for layer in range (len(level[i2][r+v3][c+v4])):
+                                        if (((level[i2][r+v3][c+v4][layer][0] in rules[2]) or (type(level[i2][r+v3][c+v4][layer][0])==str)) and not((level[i2][r+v3][c+v4][layer][0] in rules[8] and level[i][r][c][l][0] in rules[9]) or (level[i2][r+v3][c+v4][layer][0] in rules[9] and level[i][r][c][l][0] in rules[8]))):
+                                            value=2 							#stop_rule
+                                            if ((level[i2][r+v3][c+v4][layer][0] not in rules[3]) and (type(level[i2][r+v3][c+v4][layer][0])!=str)):
+                                                stop=1
+                                    for layer in range (len(level[i2][r+v3][c+v4])):
+                                        if (((level[i2][r+v3][c+v4][layer][0] in rules[3]) or (type(level[i2][r+v3][c+v4][layer][0])==str)) and stop==0):    #push_rule
+                                            push(i2,r,c,layer,v3,v4,1)   
+                        if (value!=0 or stop!=0):
+                            stop=0
+                            for l in range(len(level[i][r][c])):
+                                if (level[i][r][c][l][0] in rules[11] or (-1 in rules[11] and type(level[i][r][c][l][0])==str)):		#move_rule
+                                    v3=v3*-1
+                                    v4=v4*-1
+                                    flip.append([r,c,l])
+                                    if ((level[i][r][c][l][1]==1 and r>0) or (level[i][r][c][l][1]==2 and c<len(level[i][r])-1) or (level[i][r][c][l][1]==3 and r<len(level[i])-1) or (level[i][r][c][l][1]==4 and c>0)):
+                                        value=0
+                                        i2=instance
+                                        while (level[i2][r+v3][c+v4]==[[]]):
+                                            i2=i2-1
+                                        for layer in range (len(level[i2][r+v3][c+v4])):
+                                            if (((level[i2][r+v3][c+v4][layer][0] in rules[2]) or (type(level[i2][r+v3][c+v4][layer][0])==str)) and not((level[i2][r+v3][c+v4][layer][0] in rules[8] and level[i][r][c][l][0] in rules[9]) or (level[i2][r+v3][c+v4][layer][0] in rules[9] and level[i][r][c][l][0] in rules[8]))):
+                                                value=2 							#stop_rule
+                                                if ((level[i2][r+v3][c+v4][layer][0] not in rules[3]) and (type(level[i2][r+v3][c+v4][layer][0])!=str)):
+                                                    stop=1
+                                        for layer in range (len(level[i2][r+v3][c+v4])):
+                                            if (((level[i2][r+v3][c+v4][layer][0] in rules[3]) or (type(level[i2][r+v3][c+v4][layer][0])==str)) and stop==0):    #push_rule
+                                                push(i2,r,c,layer,v3,v4,1)
+                        if (value==0 and stop==0):                               #movement flag set
+                            for layer in range(len(level[i][r][c])):
+                                if (len(level[i][r][c][layer])>2):
+                                    if (level[i][r][c][layer][2]!=3):
+                                        if (level[i][r][c][layer][0] in rules[11] or (-1 in rules[11] and type(level[i][r][c][l][0])==str)):
+                                            level[i][r][c][layer][2]=1
+                                        else:
+                                            level[i][r][c][layer][2]=0
+                        else:
+                            for layer in range(len(level[i][r][c])):
+                                if (len(level[i][r][c][layer])>2):
+                                    if (level[i][r][c][layer][2]!=3):
+                                        level[i][r][c][layer][2]=0
+            for r in range(len(level[instance])):
+                for c in range(len(level[instance][r])):
+                        i=instance
+                        while (level[i][r][c]==[[]]):
+                            i=i-1
+                        value=-1
+                        stop=0
+                        for l in range(len(level[i][r][c])):
+                            if (len(level[i][r][c][l])>2):
+                                if (level[i][r][c][l][0] in rules[11] or (-1 in rules[11] and type(level[i][r][c][l][0])==str) or level[i][r][c][l][2]>3):		#move_rule
+                                    v3=0
+                                    v4=0
+                                    if (level[i][r][c][l][2]>3):
+                                        pmove=level[i][r][c][l][2]-3
+                                        if (level[i][r][c][l][2]==4):
+                                            v3=-1
+                                        if (level[i][r][c][l][2]==5):
+                                            v4=1
+                                        if (level[i][r][c][l][2]==6):
+                                            v3=1
+                                        if (level[i][r][c][l][2]==7):
+                                            v4=-1
+                                    else:
+                                        if (level[i][r][c][l][1]==1):
+                                            v3=-1
+                                        if (level[i][r][c][l][1]==2):
+                                            v4=1
+                                        if (level[i][r][c][l][1]==3):
+                                            v3=1
+                                        if (level[i][r][c][l][1]==4):
+                                            v4=-1
+                                        if ([r,c,l] in flip):
+                                            v3=v3*-1
+                                            v4=v4*-1
+                                    if ((v3==-1 and r>0) or (v4==1 and c<len(level[i][r])-1) or (v3==1 and r<len(level[i])-1) or (v4==-1 and c>0)):
+                                        value=0
+                                        i2=instance
+                                        while (level[i2][r+v3][c+v4]==[[]]):
+                                            i2=i2-1
+                                        for layer in range (len(level[i2][r+v3][c+v4])):
+                                            if (((level[i2][r+v3][c+v4][layer][0] in rules[2]) or (type(level[i2][r+v3][c+v4][layer][0])==str)) and not((level[i2][r+v3][c+v4][layer][0] in rules[8] and level[i][r][c][l][0] in rules[9]) or (level[i2][r+v3][c+v4][layer][0] in rules[9] and level[i][r][c][l][0] in rules[8]))):    #stop_rule
+                                                if (level[i2][r+v3][c+v4][layer][2]!=3 and level[i2][r+v3][c+v4][layer][2]!=1):
+                                                    value=2
+                                                if ((level[i2][r+v3][c+v4][layer][0] not in rules[3]) and (type(level[i2][r+v3][c+v4][layer][0])!=str)):
+                                                    stop=1
+                        if (value==0 and stop==0):                               #movement
+                            i3=instance
+                            while (level[i3][r+v3][c+v4]==[[]]):
+                                i3=i3-1
+                            for layer in range(len(level[i3][r+v3][c+v4])):
+                                if (len(level[i3][r+v3][c+v4][layer])>2):
+                                    if (level[i3][r+v3][c+v4][layer][2]==0):      #movement flag check
+                                        level[instance+1][r+v3][c+v4].append(level[i3][r+v3][c+v4][layer])
+                                        level[i3][r+v3][c+v4][layer][2]=2
+                                else:
+                                    level[instance+1][r+v3][c+v4].append(level[i3][r+v3][c+v4][layer])
+                            remove=[]
+                            for layer in range(len(level[i][r][c])):
+                                if ((level[i][r][c][layer][0] in rules[11] or (-1 in rules[11] and type(level[i][r][c][layer][0])==str)) or level[i][r][c][layer][2]>3):
+                                    if ([r,c,layer] in flip):
+                                        level[instance+1][r+v3][c+v4].append([level[i][r][c][layer][0],(level[i][r][c][layer][1]+1)%4+1,level[i][r][c][layer][2]])
+                                    elif (level[i][r][c][layer][2]>3):
+                                        level[instance+1][r+v3][c+v4].append([level[i][r][c][layer][0],pmove,level[i][r][c][layer][2]])
+                                    else:
+                                        level[instance+1][r+v3][c+v4].append(level[i][r][c][layer])
+                                    if (level[instance+1][r][c]==[[]]):
+                                        level[instance+1][r][c]=[[0]]
+                                    remove.append(level[i][r][c][layer])
+                                else:
+                                    if (len(level[i][r][c][layer])>2):
+                                        if (level[i][r][c][layer][2]!=2):
+                                            level[instance+1][r][c].append(level[i][r][c][layer])
+                                            level[i][r][c][layer][2]=2
+                            for x in range(len(remove)):
+                                level[i][r][c].remove(remove[x])
+                            merge.append([r+v3,c+v4])
+                            merge.append([r,c])
+                        elif (instance%10==9):
+                            for layer in range(len(level[i][r][c])):
+                                if (len(level[i][r][c][layer])>2):
+                                    if (level[i][r][c][layer][2]!=2):
+                                        level[instance+1][r][c].append(level[i][r][c][layer])
+                                        level[i][r][c][layer][2]=2
+                                elif (len(level[i][r][c])==1):
+                                    level[instance+1][r][c].append([0])
+                                    level[instance+1][r][c].remove([])
+            instance=instance+1
+        t4=time.time()
         execute_rules()
+        t9=time.time()
+        print ("E3: "+str(t4-t3)+"   sec.")		#move rule
+        print ("Total: "+str(t9-t1)+"   sec.")
     print ("instance "+str(instance))
     def_rules()
 def layer_cleanup():
@@ -615,11 +825,26 @@ def layer_cleanup():
                     elif (val==2):
                         level[instance][r][c].remove([0])
 def execute_rules():
-    global level,instance,rules,win,value,particle,ppos,hp,compression
+    global level,instance,rules,win,value,particle,ppos,hp,compression,merge
     layer_cleanup()
+    if (merge!=[]):
+        i=instance
+        for r in range(len(level[i])):			#merge
+            for c in range(len(level[i][r])):
+                if ([r,c] in merge):
+                    if (level[i-1][r][c]!=[]):
+                        for l in range(len(level[i][r][c])):
+                            if (level[i][r][c][l][0] in rules[11] or type(level[i][r][c][l][0])==str or level[i][r][c][l][0] in rules[3]):
+                                level[i-1][r][c].append(level[i][r][c][l])
+                    else:
+                        for l in range(len(level[i][r][c])):
+                            level[i-1][r][c].append(level[i][r][c][l])
+        level.pop()
+        instance=instance-1
+        layer_cleanup()
     def_rules()
     for o in range (-1,21):							#conversion
-        if o not in rules[11][o]:
+        if o not in rules[15][o]:
             for r in range(len(level[instance])):
                 for c in range(len(level[instance][r])):
                     i=instance
@@ -629,31 +854,31 @@ def execute_rules():
                     for l in range(len(temp)):
                         if (i!=instance):
                             if (level[i][r][c][l][0]==o or (o==-1 and type(temp[l][0])==str)):
-                                if (rules[11][o][0]==-1):
+                                if (rules[15][o][0]==-1):
                                     level[instance][r][c].append([str(level[i][r][c][l][0]),level[i][r][c][l][1],level[i][r][c][l][2]])
                                 else:
-                                    level[instance][r][c].append([rules[11][o][0],level[i][r][c][l][1],level[i][r][c][l][2]])
-                                if (len(rules[11][o])>1):
-                                    for m in range (1,len(rules[11][o])):
-                                        if (rules[11][o][m]==-1):
+                                    level[instance][r][c].append([rules[15][o][0],level[i][r][c][l][1],level[i][r][c][l][2]])
+                                if (len(rules[15][o])>1):
+                                    for m in range (1,len(rules[15][o])):
+                                        if (rules[15][o][m]==-1):
                                             level[instance][r][c].append([str(temp[l][0]),1,0])
                                         else:
-                                            level[instance][r][c].append([rules[11][o][m],1,0])
+                                            level[instance][r][c].append([rules[15][o][m],1,0])
                             else:
                                 level[instance][r][c].append(level[i][r][c][l]) 
                         else:
                             if (temp[l][0]==o or (o==-1 and type(temp[l][0])==str)):
-                                if (rules[11][o][0]==-1):
+                                if (rules[15][o][0]==-1):
                                     level[instance][r][c].append([str(temp[l][0]),1,0])
                                 else:
-                                    level[instance][r][c].append([rules[11][o][0],1,0])
+                                    level[instance][r][c].append([rules[15][o][0],1,0])
                                 level[instance][r][c].remove(temp[l])
-                                if (len(rules[11][o])>1):
-                                    for m in range (1,len(rules[11][o])):
-                                        if (rules[11][o][m]==-1):
+                                if (len(rules[15][o])>1):
+                                    for m in range (1,len(rules[15][o])):
+                                        if (rules[15][o][m]==-1):
                                             level[instance][r][c].append([str(temp[l][0]),1,0])
                                         else:
-                                            level[instance][r][c].append([rules[11][o][m],1,0])
+                                            level[instance][r][c].append([rules[15][o][m],1,0])
             layer_cleanup()
     def_rules(a=1)
     ppos=[]
